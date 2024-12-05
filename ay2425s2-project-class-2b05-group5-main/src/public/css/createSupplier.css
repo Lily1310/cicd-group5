@@ -1,0 +1,198 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background-color: #f3e5f5; /* Soft purple background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding-top: 80px; /* Offset for fixed navbar */
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #b39ddb;  /* Light purple */
+    display: flex;
+    justify-content: space-between;  /* Space between logo and nav items */
+    align-items: center;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    flex: 1;
+    margin-bottom: 10px;
+}
+
+.logo-img {
+    width: 50px;  /* Adjust logo size */
+    height: auto;
+}
+
+.nav-items {
+    list-style-type: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-items li {
+    font-size: 18px;
+}
+
+.nav-items a {
+    color: white;
+    text-decoration: none;
+    position: relative;
+    padding: 10px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+/* Active page animation */
+.nav-items a.active {
+    color: #7e57c2; /* Highlight color */
+}
+
+.nav-items a:hover {
+    color: #9575cd;  /* Lighter purple on hover */
+}
+
+.nav-items a::before {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #9575cd; /* Purple underline effect */
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-items a:hover::before {
+    transform: scaleX(1);
+}
+/* Applications Section */
+.applications-display-section {
+    padding: 40px;
+    background-color: #fff; /* White section for contrast */
+    margin: 20px auto;
+    max-width: 800px; /* Center and limit width */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.applications-display-section h2 {
+    font-size: 24px;
+    color: #7e57c2; /* Matching the theme */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Application Card Form Styling */
+.application-card {
+    background-color: #fff; /* Light background color */
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+/* Button Styling */
+button {
+    background-color: #7e57c2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #5e35b1;
+}
+
+/* Supplier Application Section */
+.supplier-application {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    margin-top: 20px; /* Space below navbar */
+}
+
+.supplier-application h2 {
+    font-size: 24px;
+    color: #7e57c2;
+    margin-bottom: 20px;
+}
+
+#apply-supplier-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#apply-supplier-form label {
+    font-size: 14px;
+    color: #333;
+    text-align: left;
+}
+
+#apply-supplier-form input,
+#apply-supplier-form textarea {
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #9575cd;
+    font-size: 14px;
+    width: 100%;
+}
+
+#apply-supplier-form button {
+    padding: 12px;
+    background-color: #9575cd;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#apply-supplier-form button:hover {
+    background-color: #7e57c2;
+}

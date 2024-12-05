@@ -1,0 +1,164 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id       Int              @id @default(autoincrement())
+  name     String
+  statusId Int
+  status   Status           @relation(fields: [statusId], references: [id])
+  persons  TaskAssignment[]
+}
+
+model Status {
+  id    Int    @id @default(autoincrement())
+  text  String @unique
+  tasks Task[]
+}
+
+model Person {
+  id     Int              @id @default(autoincrement())
+  email  String           @unique
+  name   String
+  avatar String?
+  tasks  TaskAssignment[]
+}
+
+model TaskAssignment {
+  taskId     Int
+  task       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  personId   Int
+  person     Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  assignedAt DateTime @default(now())
+
+  @@id(name: "assignmentId", [taskId, personId])
+}
+
+model Product {
+  id             Int             @id @default(autoincrement())
+  name           String?         @db.VarChar(255)
+  description    String?
+  unitPrice      Decimal         @map("unit_price") @db.Decimal
+  stockQuantity  Decimal         @default(0) @map("stock_quantity") @db.Decimal
+  country        String?         @db.VarChar(100)
+  productType    String?         @map("product_type") @db.VarChar(50)
+  imageUrl       String?         @default("../images/cat.jpg") @map("image_url") @db.VarChar(255)
+  manufacturedOn DateTime?       @map("manufactured_on") @db.Timestamp(6)
+  SuppProRe      SuppProRe[]
+  cartItem       Cartitem[]
+  orderItem      OrderItem[]
+  reviews        Review[]        // New relation for reviews
+  @@map("product")
+}
+
+model Cart {
+  cartId    Int      @id @default(autoincrement()) @map("cart_id")
+  personId  Int      @map("person_id")
+  isActive  Boolean  @default(true) @map("is_active")
+  user      User     @relation("UserCarts", fields: [personId], references: [id])
+  items     Cartitem[]
+  @@map("cart")
+}
+
+model Cartitem {
+  id        Int      @id @default(autoincrement()) @map("cartitem_id")
+  cartId    Int      @map("cart_id")
+  productId Int      @map("product_id")
+  quantity  Int
+  product   Product  @relation(fields: [productId], references: [id])
+  cart      Cart     @relation(fields: [cartId], references: [cartId])
+
+  @@map("cart_item")
+}
+
+model Order {
+  id         Int       @id @default(autoincrement())
+  sessionId  String    @unique @map("session_id")
+  personId   Int       @map("person_id")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  user       User      @relation("UserOrders", fields: [personId], references: [id])
+  orderItems OrderItem[]
+  @@map("order")
+}
+
+model OrderItem {
+  id         Int       @id @default(autoincrement())
+  orderId    Int       @map("order_id")
+  productId  Int       @map("product_id")
+  quantity   Int       @default(1)
+  product    Product   @relation(fields: [productId], references: [id])
+  order      Order     @relation(fields: [orderId], references: [id])
+}
+
+model supplier {
+  id              Int           @id @default(autoincrement())
+  personId        Int
+  user            User          @relation("UserSuppliers", fields: [personId], references: [id], onDelete: Cascade)
+  companyName     String
+  productType     String
+  supplierAdminId Int
+  supplierAdmin   supplierAdmin @relation("SupplierAdminSuppliers", fields: [supplierAdminId], references: [personId])
+  SuppProRe       SuppProRe[]
+}
+
+model SuppProRe {
+  supplierId Int
+  supplier   supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id(name: "assignmentId", [supplierId, productId])
+}
+
+model supplierApply {
+  id          Int    @id @default(autoincrement())
+  personId    Int
+  user        User   @relation("UserApplications", fields: [personId], references: [id], onDelete: Cascade)
+  status      String @default("pending")
+  companyName String
+  productType String
+  Reason      String
+  AdminReason String?
+}
+
+model supplierAdmin {
+  id        Int        @id @default(autoincrement())
+  personId  Int        @unique
+  user      User       @relation("UserAdmin", fields: [personId], references: [id], onDelete: Cascade)
+  suppliers supplier[] @relation("SupplierAdminSuppliers")
+}
+
+model User {
+  id              Int              @id @default(autoincrement())
+  email           String           @unique @db.VarChar(255) 
+  password        String           @db.VarChar(255)
+  username        String           @db.VarChar(50)
+  role            String           @default("user") // Roles: user / admin
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  isActive        Boolean          @default(true) // For soft-deletes or deactivation
+  carts           Cart[]           @relation("UserCarts")
+  orders          Order[]          @relation("UserOrders")
+  suppliers       supplier[]       @relation("UserSuppliers")
+  supplierApplications supplierApply[] @relation("UserApplications")
+  supplierAdmins  supplierAdmin[]  @relation("UserAdmin")
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  username    String   @db.VarChar(50)
+  rating      Int      @default(1)
+  text        String   @db.Text
+  createdAt   DateTime @default(now())
+}
